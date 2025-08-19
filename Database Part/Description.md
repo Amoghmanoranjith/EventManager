@@ -1,5 +1,8 @@
 ## Users Table
+### Primary key:
+- id
 
+### Columns:
 - **id**:  
   Primary key uses `UUID` instead of `SERIAL` for better scalability, shard-friendliness, and improved security.  
 
@@ -14,7 +17,12 @@
   Automatically set to the current timestamp at the time of insertion, recording the exact creation time.  
 
 ## Events Table
+### Primary key:
+- id
+### Foreign keys:
+- created_by : references to id in Users table
 
+### Columns:
 - **id**:  
   Primary key using `UUID` with default `gen_random_uuid()`.  
   Chosen for global uniqueness, scalability, and security benefits over sequential IDs.  
@@ -24,14 +32,14 @@
   Long enough to support descriptive event titles while avoiding excessive storage use.  
 
 - **description**:  
-  Required field (`NOT NULL`) with a maximum length of 1500 characters.  
-  Provides detailed information about the event. Length is generous to allow rich descriptions without requiring external storage types.  
+  Required field (`NOT NULL`) with a maximum length of 1500 characters. Not allowing null values cause we intend the user to provide description if they want to host event.
+  Length is generous to allow rich descriptions without requiring external storage types.  
 
 - **date**:  
-  Required field representing the calendar date of the event (`DATE`).  
+  Required field representing the calendar date of the event (`DATE`). Not allowing null as the event has to have some date of hosting.
 
 - **city**:  
-  Required field (`NOT NULL`) with a maximum length of 100 characters.  
+  Required field (`NOT NULL`) with a maximum length of 100 characters. Not allowing null as city of event is important for a event.
   Sufficient for long city names worldwide.  
 
 - **created_by**:  
@@ -39,7 +47,13 @@
   Enforced via a foreign key reference to `Users(id)` with `ON DELETE CASCADE`, ensuring that when a user is deleted, all events created by them are also removed.  
 
 ## RSVPs Table
+### Primary key:
+- id
+### Foreign keys:
+- user_id : references to id in Users table
+- event_id : references to id in Events table
 
+### Columns:
 - **id**:  
   Primary key using `UUID` with default `gen_random_uuid()`.  
   Ensures globally unique identifiers for each RSVP record, avoiding conflicts and making the table shard-friendly.  
