@@ -16,6 +16,7 @@
 - **created_at**:  
   Automatically set to the current timestamp at the time of insertion, recording the exact creation time.  
 
+-----------
 ## Events Table
 ### Primary key:
 - id
@@ -46,6 +47,7 @@
   Required field storing the `UUID` of the user who created the event.  
   Enforced via a foreign key reference to `Users(id)` with `ON DELETE CASCADE`, ensuring that when a user is deleted, all events created by them are also removed.  
 
+-----------
 ## RSVPs Table
 ### Primary key:
 - id
