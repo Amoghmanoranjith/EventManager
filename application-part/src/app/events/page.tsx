@@ -42,8 +42,11 @@ export default function EventsPage() {
         if (!jwt) {
             router.push(`/login`); // navigate
         }
-        else {
+        else if(event) {
             router.push(`/events/${event.id}`); // navigate
+        }
+        else{
+            alert("event might be malformed try reloading this page")
         }
     };
 
@@ -51,28 +54,40 @@ export default function EventsPage() {
         <div className="min-h-screen bg-gray-100 py-10 px-4">
             <h1 className="text-3xl font-bold text-center mb-8">Events</h1>
             <div className="max-w-4xl mx-auto grid gap-6">
-                {events.map((event: Event) => (
-                    <div
-                        key={event.id}
-                        className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition"
-                    >
-                        <h2 className="text-xl font-semibold mb-2">{event.title}</h2>
-                        <p className="text-gray-600 mb-1">
-                            <strong>Date:</strong> {new Date(event.date).toLocaleDateString()}
-                        </p>
-                        <p className="text-gray-600 mb-4">
-                            <strong>City:</strong> {event.city}
-                        </p>
+                {events.length > 0 ? (
+                    events.map((event, idx) =>
+                        event ? ( 
+                            <div
+                                key={event.id ?? idx} // fallback key if id missing
+                                className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition"
+                            >
+                                <h2 className="text-xl font-semibold mb-2">{event.title}</h2>
+                                <p className="text-gray-600 mb-1">
+                                    <strong>Date:</strong>{" "}
+                                    {new Date(event.date).toLocaleDateString()}
+                                </p>
+                                <p className="text-gray-600 mb-4">
+                                    <strong>City:</strong> {event.city}
+                                </p>
 
-                        <button
-                            onClick={() => handleKnowMore(event)}
-                            className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        >
-                            Know More
-                        </button>
-                    </div>
-                ))}
+                                <button
+                                    onClick={() => handleKnowMore(event)}
+                                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                >
+                                    Know More
+                                </button>
+                            </div>
+                        ) : null 
+                    )
+                ) : (
+                    <p className="text-center text-gray-600 mt-10">
+                        Looks like you missed the party 🎉 Stay tuned for more events in the
+                        future!
+                    </p>
+                )}
+
             </div>
         </div>
     );
+
 }
