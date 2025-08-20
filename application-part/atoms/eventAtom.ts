@@ -6,7 +6,7 @@ export type Event = {
   description:string;
   city:string;
   date:string;
-} | null;
+} ;
 
 // Atom to hold the logged-in user
-export const eventAtom = atom<Event>(null);
+export const eventAtom = atom<Event | null>(null);
