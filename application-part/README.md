@@ -1,16 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Event Manager
 
-## Getting Started
+A simple event management application built with **Next.js**, **TypeScript**, **TailwindCSS**, and **Jotai** for state management.  
+Users can view events, see event details, and RSVP with their response.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
+## Setup
 
+1. **Clone the repository**
+```
+git clone https://github.com/Amoghmanoranjith/EventManager
+cd EventManager
+```
+2. **Install dependencies**
+```
+npm install
 ```
 
-## Deploy on Vercel
+3. **Configure environment variables**
+Create a .env.local file in the project root and set the required variable in .env file:
+```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
+JWT_SECRET=your_secret_here
+```
+4. **Run the development server**
+```
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The app will be available at http://localhost:3000
+.
