@@ -21,6 +21,12 @@ Users can view events, see event details, and RSVP with their response.
 
 ---
 
+## Deployment
+on vercel:
+https://event-manager-olive.vercel.app/login
+
+---
+
 ## Setup
 
 1. **Clone the repository**
@@ -47,10 +53,7 @@ npm run dev
 
 The app will be available at http://localhost:3000.
 
-
-## Deployment
-on vercel:
-https://event-manager-olive.vercel.app/login
+---
 
 ## Features
 
