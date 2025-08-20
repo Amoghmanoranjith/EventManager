@@ -13,8 +13,7 @@ export async function POST(req: Request) {
 
         // Extract token
         const token = authHeader.split(" ")[1];
-        const user_id = verifyJWT(token).id; //get two errors one is 401 another 500
-
+        const user_id = verifyJWT(token).decoded.id; //get two errors one is 401 another 500
         // 1. Validate request body -------------------------
         // If any of the required fields are missing, the request is malformed.
         if(!user_id){
