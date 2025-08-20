@@ -51,8 +51,7 @@ export async function POST(req: Request) {
         );
 
     } catch (error: any) {
-        console.error(error);
-
+        console.log(error)
         // 3. Prisma-specific error handling ----------------
         if (error.code === "P2002") {
             // Unique constraint violation (duplicate entry)
@@ -80,8 +79,21 @@ export async function POST(req: Request) {
                 );
             }
         }
+        // 4. JWT errors
+        if(error.code === "jwt_secret_not_found"){
+            return NextResponse.json(
+                { error: error.message },
+                { status: 500 } // 500 secret key not found
+            );
+        }
+        else if(error.code === "invalid_jwt"){
+            return NextResponse.json(
+                { error: error.message },
+                { status: 401 } // 401 jwt is valid
+            );
 
-        // 4. Unexpected errors -----------------------------
+        }
+        // 5. Unexpected errors -----------------------------
         return NextResponse.json(
             { error: "Internal Server Error" },
             { status: 500 } // 500 Internal Server Error → unexpected failure
