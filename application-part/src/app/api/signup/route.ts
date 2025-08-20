@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { NextRequest } from "next/server";
+import { genJWT } from "../../../../utils/genJWT";
 
 // POST /api/signup
 export async function POST(req: NextRequest) {
@@ -21,8 +22,9 @@ export async function POST(req: NextRequest) {
             }
         })
         // 3. Success response -----------------------------
+        const token = genJWT(user);
         return NextResponse.json(
-            { id: user.id, name: user.name, email: user.email },
+            { token },
             { status: 201 } // 200 OK → user successfully created
         );
     } catch (error : any) {
