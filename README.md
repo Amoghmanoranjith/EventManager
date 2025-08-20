@@ -1,4 +1,7 @@
-## The Database part to look at the database setup, sql dump and description along with justification for the selected system designs
+## 🗄️ Database  
+The Database part has the database setup, SQL dump, and description along with justification for the selected system designs.  
 
+## 💻 Application  
+The Application part has a Next.js application which operates on the database along with the live deployment on Vercel.  
 
-## The application part for a Nextjs application which operates on the database along with the live deployment on vercel
+*(Both parts include corresponding descriptions and READMEs.)*
