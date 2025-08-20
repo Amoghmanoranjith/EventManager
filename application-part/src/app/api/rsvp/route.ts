@@ -29,7 +29,7 @@ export async function POST(req: Request) {
         });
 
         // If create succeeds, Prisma always returns a record.
-        
+
         return NextResponse.json(
             { message: "record created successfully" },
             { status: 201 } // 201 Created → new resource successfully created

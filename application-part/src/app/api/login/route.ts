@@ -3,36 +3,47 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/login
 export async function POST(req: Request) {
-    try {
-        const { name, email } = await req.json();
+  try {
+    const { name, email } = await req.json();
 
-        if (!name || !email) {
-            return NextResponse.json(
-                { error: "Name and email are required" },
-                { status: 400 }
-            );
-        }
-
-        // Check if user exists using both name and email
-        // email is unique, we take name so that we can get a low level auth by matching the name to email
-        let user = await prisma.users.findFirst({
-            where: {
-                AND: [
-                    { email: email },
-                    { name: name }
-                ]
-            },
-        });
-        // if user is not found then return not found error
-        if(!user){
-            return NextResponse.json({error: "User not found"},{status : 404})
-        }
-        return NextResponse.json(
-            { id: user.id, name: user.name, email: user.email },
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error("Login error:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    // 1. Validate request body -------------------------
+    if (!name || !email) {
+      return NextResponse.json(
+        { error: "Name and email are required" },
+        { status: 400 } // 400 Bad Request → client did not send required fields
+      );
     }
+
+    // 2. Fetch user from database ----------------------
+    // AND condition ensures both email and name match
+    const user = await prisma.users.findFirst({
+      where: {
+        AND: [
+          { email },     // email is unique
+          { name },      // extra low-level auth check
+        ],
+      },
+    });
+
+    // 3. Handle user not found ------------------------
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 } // 404 Not Found → no matching user
+      );
+    }
+
+    // 4. Success response -----------------------------
+    return NextResponse.json(
+      { id: user.id, name: user.name, email: user.email },
+      { status: 200 } // 200 OK → user successfully found
+    );
+  } catch (error) {
+    // 5. Unexpected errors ---------------------------
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 } // 500 Internal Server Error → database or server failure
+    );
+  }
 }
