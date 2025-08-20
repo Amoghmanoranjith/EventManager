@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { genJWT } from "../../../../utils/genJWT";
 
 // POST /api/login
 export async function POST(req: Request) {
@@ -32,8 +33,10 @@ export async function POST(req: Request) {
       );
     }
     // 4. Success response -----------------------------
+    // generate a jwt token using the user
+    const token = genJWT(user);
     return NextResponse.json(
-      { id: user.id, name: user.name, email: user.email },
+      { token},
       { status: 200 } // 200 OK → user successfully found
     );
   } catch (error) {
