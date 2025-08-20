@@ -46,3 +46,43 @@ npm run dev
 ```
 
 The app will be available at http://localhost:3000.
+
+## Features
+
+### 🔑 User Authentication with JWT
+- Secure login system using **JSON Web Tokens (JWT)**.
+- Users provide a username and email to log in.
+- JWTs are stored securely on the client side (localStorage) to maintain authentication state.
+- Protected routes (e.g., event pages, RSVP actions) are only accessible with a valid token.
+- Automatic redirection for unauthenticated users to the login page.
+
+### 📅 Event Listing and Details
+- Displays a list of upcoming events in a clean, card-based UI.
+- Each event shows:
+  - **Title** of the event
+  - **Date** (formatted for readability)
+  - **City/Location**
+- "Know More" button available on each event card to view detailed event information.
+- Handles cases where no events are available:
+  - Displays a friendly message: *"Looks like you missed the party. Stay tuned for more events in the future."*
+
+### ✋ RSVP Functionality
+- Logged-in users can RSVP to events with options such as **Yes, No, or Maybe**.
+- RSVP responses are stored and linked to both the user and event.
+- Ensures that each user can only RSVP once per event (unique constraint).
+- Events dynamically reflect a user’s RSVP status.
+- Provides a seamless flow from browsing events → viewing details → confirming RSVP.
+
+### ⚠️ Robust API Error Handling
+- All API endpoints implement consistent error responses with meaningful messages.
+- Handles common scenarios such as:
+  - **Authentication errors** (invalid or missing JWT).
+  - **Validation errors** (e.g., missing required fields like event ID, name, or email).
+  - **Not found errors** (e.g., when an event or RSVP does not exist).
+  - **Conflict errors** (e.g., attempting to RSVP multiple times for the same event).
+  - **Server errors** (graceful fallback when unexpected issues occur).
+
+## Deployment
+on vercel:
+
+https://event-manager-olive.vercel.app/login
