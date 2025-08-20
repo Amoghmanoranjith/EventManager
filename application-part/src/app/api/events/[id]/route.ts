@@ -4,9 +4,9 @@ import type { NextRequest } from "next/server";
 
 
 // GET /api/events/{id}
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: {params: Promise<{ id: string }>}) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     const event = await prisma.events.findUnique({
       where: { id },
