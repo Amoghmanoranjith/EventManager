@@ -56,6 +56,7 @@ export default function EventDetailsPage() {
     const token = localStorage.getItem("jwt");
     if (!token) {
       alert("You must be logged in to respond.");
+      router.push('/login');
       return;
     }
 
@@ -77,10 +78,10 @@ export default function EventDetailsPage() {
 
       if (res.ok) {
         alert("Response submitted successfully!");
-        router.push('/events');
       } else {
         alert(data.error || "Failed to submit response");
       }
+      router.push('/events');
     } catch (err) {
       alert("Something went wrong. Try again.");
     } finally {
