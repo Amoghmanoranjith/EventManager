@@ -4,37 +4,30 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  // Local state to store user inputs
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-
-  // Next.js router for navigation
   const router = useRouter();
 
   // Handle login form submission
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // prevent default form reload behavior
+    e.preventDefault();
 
     try {
-      // Send login request to backend
       const res = await fetch("/api/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" }, // specify JSON format
-        body: JSON.stringify({ name: username, email }), // send user credentials
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: username, email }),
       });
 
-      const data = await res.json(); // parse response
+      const data = await res.json();
 
       if (res.ok && data.token) {
-        // If login is successful and token is returned
-        localStorage.setItem("jwt", data.token); // save JWT token locally
-        router.push("/events"); // navigate to events page
+        localStorage.setItem("jwt", data.token);
+        router.push("/events");
       } else {
-        // If login fails, show error message
         alert(data.error || "Invalid credentials");
       }
     } catch (err) {
-      // Handle unexpected errors
       alert("Something went wrong");
     }
   };
@@ -60,7 +53,7 @@ export default function LoginPage() {
           {/* Email input */}
           <input
             type="email"
-            placeholder="email"
+            placeholder="Email"
             className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -75,6 +68,17 @@ export default function LoginPage() {
             Login
           </button>
         </form>
+
+        {/* Link to signup page */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <button
+            onClick={() => router.push("/signup")}
+            className="text-blue-600 hover:underline"
+          >
+            Sign up here
+          </button>
+        </p>
       </div>
     </div>
   );
