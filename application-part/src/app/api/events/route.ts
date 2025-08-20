@@ -6,7 +6,6 @@ export async function GET() {
   try {
     // 1. Fetch all events from the database ----------------
     const events = await prisma.events.findMany(); // returns [] if no records
-
     // 2. Return the events -------------------------------
     return NextResponse.json(events, { status: 200 }); // 200 OK → success
   } catch (error) {

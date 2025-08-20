@@ -13,7 +13,6 @@ export async function POST(req: Request) {
         { status: 400 } // 400 Bad Request → client did not send required fields
       );
     }
-
     // 2. Fetch user from database ----------------------
     // AND condition ensures both email and name match
     const user = await prisma.users.findFirst({
@@ -32,7 +31,6 @@ export async function POST(req: Request) {
         { status: 404 } // 404 Not Found → no matching user
       );
     }
-
     // 4. Success response -----------------------------
     return NextResponse.json(
       { id: user.id, name: user.name, email: user.email },
