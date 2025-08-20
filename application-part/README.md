@@ -47,6 +47,11 @@ npm run dev
 
 The app will be available at http://localhost:3000.
 
+
+## Deployment
+on vercel:
+https://event-manager-olive.vercel.app/login
+
 ## Features
 
 ### 🔑 User Authentication with JWT
@@ -82,7 +87,3 @@ The app will be available at http://localhost:3000.
   - **Conflict errors** (e.g., attempting to RSVP multiple times for the same event).
   - **Server errors** (graceful fallback when unexpected issues occur).
 
-## Deployment
-on vercel:
-
-https://event-manager-olive.vercel.app/login
