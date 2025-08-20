@@ -9,6 +9,7 @@ export default function EventsPage() {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    // @ts-ignore
     const setEvent = useSetAtom(eventAtom);
     const router = useRouter();
 
