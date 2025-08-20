@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { genJWT } from "../../../../utils/genJWT";
+import type { NextRequest } from "next/server";
 
 // POST /api/login
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const { name, email } = await req.json();
 

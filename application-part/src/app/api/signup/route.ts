@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import type { NextRequest } from "next/server";
 
 // POST /api/signup
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         const { name, email } = await req.json();
         // 1. Validate request body -------------------------

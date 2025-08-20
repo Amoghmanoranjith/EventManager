@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyJWT } from "../../../../utils/verifyJWT";
+import type { NextRequest } from "next/server";
+
 
 // POST /api/rsvp
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         const { event_id, status } = await req.json();
         const authHeader = req.headers.get("Authorization");
