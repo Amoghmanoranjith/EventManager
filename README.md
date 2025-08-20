@@ -1,0 +1,2 @@
+Explore the Database part to look at the database setup, sql dump and description along with justification for the selected system designs
+Explore the application part for a Nextjs application which operates on the database along with the live deployment on vercel
