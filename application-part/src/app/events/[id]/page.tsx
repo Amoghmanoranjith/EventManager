@@ -23,6 +23,7 @@ export default function EventDetailsPage() {
           const data = await res.json();
 
           if (res.ok) {
+            // @ts-ignore
             setEvent(data as Event);
           } else {
             alert(data.error || "Failed to fetch event");
