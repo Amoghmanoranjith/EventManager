@@ -20,8 +20,9 @@ npm install
 3. **Configure environment variables**
 Create a .env.local file in the project root and set the required variable in .env file:
 ```
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api
-JWT_SECRET=your_secret_here
+DATABASE_URL="supabase_connection_uri"
+NODE_ENV="development"
+JWT_SECRET_KEY="your_secret_key"
 ```
 4. **Run the development server**
 ```
