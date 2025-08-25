@@ -9,7 +9,7 @@
 (but in postgresql we have MVCC-multi-version concurrency control so not a real issue as reads can take place from same record)
 ➖ also not a good normalization practice
 
-## 2. create a new table which stores the rsvp counts for a given event id
+## 2. create a new table which stores the rsvp counts for a given event id ✅
 ➕ separation of concerns and cleaner design
 ➕ scalable 
 ➕ makes sure that events table is more available for reads 
@@ -23,5 +23,10 @@
 ➕ i save memory
 ➕ always consistent values returned
 ➖ takes more time if there are a lot of records in rsvps table
+
+## For updating the rsvp_counts table:
+- have a trigger 
+- make sure that a transaction is in place which will roll back if trigger fails
+- implement this
 
 
