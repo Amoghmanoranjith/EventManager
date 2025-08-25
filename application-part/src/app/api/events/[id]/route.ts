@@ -28,3 +28,10 @@ export async function GET(req: NextRequest, { params }: {params: Promise<{ id: s
     );
   }
 }
+// i also want to return the count of rsvps to an event i can do this in 3 ways:
+// 1. a separate rsvps_count table
+// + clean tables 
+// + 
+// 2. create a column in events which will hold the count of rsvps to that event
+// 3. count the number of rows in rsvps table where event_id is given event_id
+

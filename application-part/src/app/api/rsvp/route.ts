@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
                 { status: 422 } // 422 Unprocessable Entity → syntactically valid but semantically invalid
             );
         }
-
+        // start a transaction
         // 2. Create RSVP record ----------------------------
         const rsvp = await prisma.rsvps.create({
             data: { user_id, event_id, status },
