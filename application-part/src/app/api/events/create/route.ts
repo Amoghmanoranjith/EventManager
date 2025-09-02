@@ -15,13 +15,13 @@ const EventSchema = z.object({
 // POST /api/events/create
 export async function POST(req: NextRequest) {
     try {
-
         const body = await req.json();
         const authHeader = req.headers.get("Authorization");
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
         const token = authHeader.split(" ")[1];
+        // get the user id stored in jwt
         const created_by = verifyJWT(token).decoded.id; //get two errors one is 401 another 500
         
         // 1. Validate request body -------------------------
