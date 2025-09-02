@@ -26,7 +26,13 @@
 
 ## For updating the rsvp_counts table:
 - have a trigger 
+- having api hit db multiple times or having a transaction also works
+- however whenever there is some other api wanting to create an rsvp they will also need to keep this in mind
+- so for safer side i will use triggers doesnt matter if one api or new
 - make sure that a transaction is in place which will roll back if trigger fails
+- no need for explicit transaction as postgresql already does this 
+- whenever an after or before is present pgsql will wrap the insertion and trigger function in one transaction.
+- whenever an event is created i should create a record in rsvp_counts
 - implement this
 
 
