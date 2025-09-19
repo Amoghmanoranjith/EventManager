@@ -1,12 +1,17 @@
 // prisma/seedEvents.ts
 import { prisma } from "@/lib/prisma";
 
-
 // User ID that exists in your DB (adjust if needed)
 const CREATED_BY = "01409f1c-0fc4-42bc-96bd-f5815aab78ae";
 
 // Example city list
 const cities = ["Delhi", "Mumbai", "Bangalore", "Chennai", "Kolkata", "Hyderabad"];
+
+async function resetEvents() {
+  console.log("🔄 Truncating events (cascade)...");
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE "events" CASCADE;`);
+  console.log("✅ Events table truncated.");
+}
 
 async function createEvents(count: number) {
   console.log(`Creating ${count} events...`);
@@ -34,8 +39,9 @@ async function createEvents(count: number) {
 }
 
 async function main() {
-  const count = 100;
+  const count = 10000;
   try {
+    await resetEvents();
     await createEvents(count);
   } catch (err) {
     console.error("❌ Error seeding events:", err);

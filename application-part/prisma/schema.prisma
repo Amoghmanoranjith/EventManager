@@ -16,6 +16,7 @@ model events {
   date        DateTime     @db.Date
   city        String       @db.VarChar(100)
   created_by  String       @db.Uuid
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
   users       users        @relation(fields: [created_by], references: [id], onDelete: Cascade, onUpdate: NoAction)
   rsvp_counts rsvp_counts?
   rsvps       rsvps[]
