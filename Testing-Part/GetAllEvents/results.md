@@ -3,7 +3,7 @@
 - test get 
 - generate 1000 events done in 2.96s
 - test
-- generate 10000 events
+- generate 10000 events done in 19.79s
 - test
 
 ### what to test
@@ -11,8 +11,8 @@
 - is there error in fetching what sort of error
 - size of each response
 
-
-## 100 events:
+# locally:
+## 100 events: - 21.46 KB
 - 100 concurrent users
     Run1:
     TOTAL RESULTS
@@ -93,7 +93,7 @@
     data_received..................: 8.6 MB 212 kB/s
     data_sent......................: 31 kB  761 B/s
 
-## 1000 events
+## 1000 events - 214.6 KB
 - 100 concurrent users
     Run1:
     TOTAL RESULTS
@@ -156,7 +156,7 @@
     NETWORK
     data_received..................: 69 MB 1.7 MB/s
     data_sent......................: 27 kB 654 B/s
-    
+
     Run3:
     checks_total.......: 668    16.303953/s
     checks_succeeded...: 98.20% 656 out of 668
@@ -185,3 +185,44 @@
     NETWORK
     data_received..................: 72 MB 1.7 MB/s
     data_sent......................: 27 kB 652 B/s
+
+## 10000 events - 2186.88 KB
+   - 100 concurrent users
+   - aggregated across 3 runs
+   TOTAL RESULTS
+
+    checks_total.......: 1346   ~8.93/s
+    checks_succeeded...: 74.97% 1009 out of 1346
+    checks_failed......: 25.02%  337 out of 1346
+
+    ✗ status is 200
+      ↳  ~49% — ✓ 336 / ✗ 337
+    ✓ response has data
+
+
+    CUSTOM
+    errors_5xx.....................: 337   ~2.24/s
+    errors_total...................: 337   ~2.24/s
+
+
+    HTTP
+    http_req_duration..............: avg=15.91s  min=4.73s  med=15.96s  max=26.08s  
+                                 p(90)=20.79s  p(95)=22.63s
+    { expected_response:true }...: avg=16.54s  min=4.73s  med=18.25s  max=26.08s  
+                                  p(90)=21.77s  p(95)=22.93s
+    http_req_failed................: 50.07% 337 out of 673
+    http_reqs......................: 673   ~4.47/s
+
+
+    EXECUTION
+    iteration_duration.............: avg=16.58s  min=5.74s  med=16.63s  max=27.08s  
+                                 p(90)=21.79s  p(95)=22.74s
+    iterations.....................: 673   ~4.47/s
+    vus............................: 1–2   min=1   max=100
+    vus_max........................: 100
+
+
+    NETWORK
+    data_received..................: ~752 MB  ~5.0 MB/s
+    data_sent......................: 57 kB   ~378 B/s
+
