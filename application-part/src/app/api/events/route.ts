@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
+import client from "@/lib/redis";
 // GET /api/events
 // Query parameters (all optional):
 // - pagination: true/false → whether to enable pagination
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     const page = parseInt(searchParams.get("page") || "1", 10);   // default = 1
     const size = parseInt(searchParams.get("size") || "10", 10);  // default = 10
 
-    
+
     // 3. Handle pagination logic --------------------------
     if (pagination) {
       // 3a. Validate `page` and `size` 
@@ -31,6 +31,10 @@ export async function GET(req: Request) {
           { status: 400 }
         );
       }
+
+      // redis happens
+      // if get_events is empty hit the db once with this and 
+
       // 3b. Count total records
       const totalRecords = await prisma.events.count();
 
@@ -49,7 +53,7 @@ export async function GET(req: Request) {
       const events = await prisma.events.findMany({
         skip: (page - 1) * size,
         take: size,
-        orderBy: { date: "desc" }, // 👈 adjust ordering as needed
+        orderBy: { date: "desc" },
       });
 
       // 3f. Build pagination metadata
@@ -70,9 +74,25 @@ export async function GET(req: Request) {
     }
 
     // 4. If no pagination requested → return all events ----
+    // redis happens here
+    console.time('redis_get');
+    const cachedEvents = await client.get('all_events');
+    console.timeEnd('redis_get');
+    if (cachedEvents) {
+      const eventsString = typeof cachedEvents === 'string'
+        ? cachedEvents
+        : cachedEvents.toString();
+
+      const events = JSON.parse(eventsString);
+      return NextResponse.json({ data: events }, { status: 200 });
+    }
+    // meaning not found
+    console.time('db query');
     const events = await prisma.events.findMany({
-      orderBy: { date: "asc" },
+      orderBy: { date: 'asc' },
     });
+    console.timeEnd('db query');
+    await client.set('all_events', JSON.stringify(events));
 
     return NextResponse.json({ data: events }, { status: 200 });
   } catch (error) {
