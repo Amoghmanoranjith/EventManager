@@ -1,47 +1,49 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import client from "@/lib/redis";
+import client from "@/lib/redis"; // Valkey client
+
 // GET /api/events
 // Query parameters (all optional):
-// - pagination: true/false → whether to enable pagination
-// - page: int → page number (1-based index)
-// - size: int → number of records per page
+// - pagination: true/false → enable pagination
+// - page: int → page number (1-based index, default = 1)
+// - size: int → number of records per page (default = 10)
 export async function GET(req: Request) {
   try {
     // 1. Parse query params from URL -----------------------
     const { searchParams } = new URL(req.url);
 
-    const pagination = searchParams.get("pagination") === "true"; // default = false
-    const page = parseInt(searchParams.get("page") || "1", 10);   // default = 1
-    const size = parseInt(searchParams.get("size") || "10", 10);  // default = 10
+    const pagination = searchParams.get("pagination") === "true";
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const size = parseInt(searchParams.get("size") || "10", 10);
 
-
-    // 3. Handle pagination logic --------------------------
+    // 2. If pagination is requested -----------------------
     if (pagination) {
-      // 3a. Validate `page` and `size` 
-      if (page < 1) {
-        return NextResponse.json(
-          { error: "Page number must be >= 1" },
-          { status: 400 }
-        );
+      // 2a. Try Valkey first (fetch all_events from cache)
+      const cachedEvents = await client.get("all_events");
+      let allEvents: any[];
+
+      if (cachedEvents) {
+        // Found in Valkey → parse JSON
+        allEvents =
+          typeof cachedEvents === "string"
+            ? JSON.parse(cachedEvents)
+            : JSON.parse(cachedEvents.toString());
+      } else {
+        // Cache miss → hit DB once
+        allEvents = await prisma.events.findMany({
+          orderBy: { date: "desc" },
+        });
+
+        // Store result in Valkey with 20s TTL
+        await client.set("all_events", JSON.stringify(allEvents), {
+          EX: 20,
+        });
       }
-      if (size < 1 || size > 100) {
-        return NextResponse.json(
-          { error: "Page size must be between 1 and 100" },
-          { status: 400 }
-        );
-      }
 
-      // redis happens
-      // if get_events is empty hit the db once with this and 
-
-      // 3b. Count total records
-      const totalRecords = await prisma.events.count();
-
-      // 3c. Calculate total pages
+      // 2b. Pagination calculations -----------------------
+      const totalRecords = allEvents.length;
       const totalPages = Math.ceil(totalRecords / size);
 
-      // 3d. Validate page within bounds
       if (page > totalPages && totalRecords > 0) {
         return NextResponse.json(
           { error: `Page ${page} is out of range. Max page = ${totalPages}` },
@@ -49,14 +51,11 @@ export async function GET(req: Request) {
         );
       }
 
-      // 3e. Fetch paginated events
-      const events = await prisma.events.findMany({
-        skip: (page - 1) * size,
-        take: size,
-        orderBy: { date: "desc" },
-      });
+      // 2c. Slice cached events for current page ----------
+      const startIdx = (page - 1) * size;
+      const paginatedEvents = allEvents.slice(startIdx, startIdx + size);
 
-      // 3f. Build pagination metadata
+      // 2d. Build pagination metadata ---------------------
       const paginationInfo = {
         total_records: totalRecords,
         current_page: page,
@@ -66,37 +65,38 @@ export async function GET(req: Request) {
         page_size: size,
       };
 
-      // 3g. Return paginated response
+      // 2e. Return paginated response ---------------------
       return NextResponse.json(
-        { data: events, pagination: paginationInfo },
+        { data: paginatedEvents, pagination: paginationInfo },
         { status: 200 }
       );
     }
 
-    // 4. If no pagination requested → return all events ----
-    // redis happens here
-    console.time('redis_get');
-    const cachedEvents = await client.get('all_events');
-    console.timeEnd('redis_get');
+    // 3. If no pagination requested -----------------------
+    // 3a. Try Valkey for all_events -----------------------
+    const cachedEvents = await client.get("all_events");
     if (cachedEvents) {
-      const eventsString = typeof cachedEvents === 'string'
-        ? cachedEvents
-        : cachedEvents.toString();
-
-      const events = JSON.parse(eventsString);
+      const events =
+        typeof cachedEvents === "string"
+          ? JSON.parse(cachedEvents)
+          : JSON.parse(cachedEvents.toString());
       return NextResponse.json({ data: events }, { status: 200 });
     }
-    // meaning not found
-    console.time('db query');
-    const events = await prisma.events.findMany({
-      orderBy: { date: 'asc' },
-    });
-    console.timeEnd('db query');
-    await client.set('all_events', JSON.stringify(events));
 
+    // 3b. Cache miss → query DB --------------------------
+    const events = await prisma.events.findMany({
+      orderBy: { date: "asc" },
+    });
+
+    // Store result in Valkey with 20s TTL
+    await client.set("all_events", JSON.stringify(events), {
+      EX: 20,
+    });
+
+    // 3c. Return non-paginated response ------------------
     return NextResponse.json({ data: events }, { status: 200 });
   } catch (error) {
-    // 5. Unexpected error handling -------------------------
+    // 4. Unexpected error handling ------------------------
     console.error("Error fetching events:", error);
     return NextResponse.json(
       { error: "Failed to fetch events" },
